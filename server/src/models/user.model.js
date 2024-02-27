@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const UserSchema = new Schema({
+const userSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -57,6 +57,6 @@ userSchema.methods.generateRefreshToken = function () {
   );
 };
 
-const User = model("User", UserSchema);
+const User = model("User", userSchema);
 
 export default User;
