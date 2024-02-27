@@ -1,5 +1,5 @@
-import User from "../models/user.model";
-import { asyncHandler } from "../utils/asyncHandler";
+import User from "../models/user.model.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 const generateAccessAndRefereshTokens = async (userId) => {
   try {
@@ -23,9 +23,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, phone } = req.body;
 
   // check if user already exist
-  const existedUser = await User.findOne({
-    $or: [{ username }, { email }],
-  });
+  const existedUser = await User.findOne({ email });
 
   if (existedUser) {
     throw new ApiError(409, "User with email or username already exists");
