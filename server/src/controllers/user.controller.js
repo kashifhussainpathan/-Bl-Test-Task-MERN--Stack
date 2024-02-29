@@ -1,5 +1,7 @@
 import User from "../models/user.model.js";
+import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 const generateAccessAndRefereshTokens = async (userId) => {
   try {
@@ -22,11 +24,10 @@ const generateAccessAndRefereshTokens = async (userId) => {
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, phone } = req.body;
 
-  // check if user already exist
   const existedUser = await User.findOne({ email });
 
   if (existedUser) {
-    throw new ApiError(409, "User with email or username already exists");
+    throw new ApiError(409, "User with email already exists");
   }
 
   const user = await User.create({
@@ -46,7 +47,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   return res
     .status(201)
-    .json(new ApiResponse(200, createdUser, "User registered Successfully"));
+    .json(new ApiResponse(201, createdUser, "User registered Successfully"));
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -89,4 +90,16 @@ const loginUser = asyncHandler(async (req, res) => {
   );
 });
 
-export { loginUser, registerUser };
+const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find();
+
+  if (!users.length) {
+    throw new ApiError(400, "No users found.");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, users, "Users found successfully."));
+});
+
+export { loginUser, registerUser, getUsers };
